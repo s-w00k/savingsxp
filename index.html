@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Savings XP RPG</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Savings XP RPG</h1>
+      <p>Your salary is your monthly 100% life bar. Spending damages XP. Extra money becomes level-up power.</p>
+    </header>
+      
+<div class="card character-card">
+  <button id="menuBtn" class="menu-btn">⋮</button>
+
+  <h2>Character</h2>
+  <img id="characterImg" src="assets/pic1.svg" alt="Savings character">
+
+ <div id="setupMenu" class="setup-menu">
+  <h2>Game Setup</h2>
+
+  <form id="setupForm">
+    <label>
+      Monthly Salary
+      <input type="number" id="salaryInput" placeholder="Example: 2000" required />
+    </label>
+
+    <label>
+      Current Bank / Savings Balance
+      <input type="number" id="startingBalanceInput" placeholder="Example: 1000" required />
+    </label>
+
+    <button type="submit" class="secondary-btn">Start / Update Game Setup</button>
+  </form>
+
+  <p class="subtext">
+    Example: If salary is $2,000, then $2,000 = 100% XP. A $500 drop costs 25% XP. A $1,000 increase gives 50% XP.
+  </p>
+</div>
+</div>
+
+    <section class="dashboard">
+      <div class="card">
+        <h2>Current Balance</h2>
+        <div class="big-number" id="currentBalance">$0</div>
+        <div class="rank" id="rankName">Novice Saver</div>
+      </div>
+
+      <div class="card">
+        <h2>Monthly Life / XP</h2>
+        <div class="big-number" id="lifePercent">100%</div>
+        <div class="progress-container">
+          <div class="progress-bar life-bar" id="lifeBar"></div>
+        </div>
+        <p class="message" id="lifeText">Salary = 100% XP</p>
+      </div>
+
+      <div class="card">
+        <h2>Excess XP</h2>
+        <div class="big-number" id="excessXp">0%</div>
+        <div class="progress-container">
+          <div class="progress-bar" id="levelBar"></div>
+        </div>
+        <p class="message" id="levelText">Extra XP above 100% goes here.</p>
+      </div>
+
+      <div class="card">
+        <h2>Character Level</h2>
+        <div class="big-number" id="level">Level 1</div>
+        <p class="message" id="levelMessage">Earn excess XP to level up.</p>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <div class="card">
+        <h2>Input Current Bank Balance</h2>
+        <form id="balanceForm">
+          <label>
+            Current Bank Balance
+            <input type="number" id="balanceInput" placeholder="Example: 3000" required />
+          </label>
+
+          <button type="submit">Update Balance</button>
+          <button type="button" class="danger-btn" id="resetBtn">Reset Game</button>
+        </form>
+        <p class="message" id="gameMessage"></p>
+      </div>
+
+      <div class="card">
+        <h2>XP Battle Log</h2>
+        <ul class="log-list" id="logList"></ul>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
