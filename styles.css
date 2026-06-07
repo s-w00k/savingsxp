@@ -286,3 +286,100 @@ button:hover {
 .setup-menu .subtext {
   color: white;
 }
+
+.profile-frame {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  border: 6px solid #9ca3af;
+  margin: 20px auto 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e5e7eb;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.profile-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+#profilePlaceholder {
+  color: #374151;
+  font-weight: bold;
+}
+
+#profileUpload {
+  display: none;
+}
+
+.profile-frame {
+  cursor: pointer;
+}
+
+.profile-info {
+  text-align: center;
+  color: #f9fafb;
+}
+
+.profile-info h2 {
+  color: #111827;
+  font-size: 1.2rem;
+}
+
+#profileLevel {
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+#profileStars {
+  margin-top: 8px;
+  font-size: 1.3rem;
+}
+#profileTitle {
+  color: #facc15;
+  text-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+}
+
+#profileLevel {
+  color: #d1d5db;
+  font-weight: bold;
+}
+
+#profileStars {
+  color: #facc15;
+}
+
+.profile-section {
+  position: relative;
+  width: 220px;
+  margin: 0 auto;
+}
+
+.menu-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: transparent;
+  color: #f9fafb;
+  font-size: 28px;
+  padding: 4px 10px;
+  z-index: 10;
+}
+
+.menu-btn:hover {
+  background: rgba(255,255,255,0.15);
+  transform: none;
+}
+
+.hidden {
+  display: none;
+}
+
+#removePhotoBtn {
+  display: none;
+}
