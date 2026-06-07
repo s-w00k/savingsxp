@@ -18,8 +18,14 @@ const levelMessageEl = document.getElementById("levelMessage");
 const logListEl = document.getElementById("logList");
 const gameMessageEl = document.getElementById("gameMessage");
 const resetBtn = document.getElementById("resetBtn");
+
 const menuBtn = document.getElementById("menuBtn");
 const setupMenu = document.getElementById("setupMenu");
+
+const profileUpload = document.getElementById("profileUpload");
+const profileImg = document.getElementById("profileImg");
+const profilePlaceholder = document.getElementById("profilePlaceholder");
+const removePhotoBtn = document.getElementById("removePhotoBtn");
 
 let game = JSON.parse(localStorage.getItem("savingsXpGame")) || {
   salary: 0,
@@ -29,7 +35,7 @@ let game = JSON.parse(localStorage.getItem("savingsXpGame")) || {
   storedExcessXp: 0,
   level: 1,
   log: [],
-    hasSetup: false
+  hasSetup: false
 };
 
 function formatMoney(amount) {
@@ -37,16 +43,16 @@ function formatMoney(amount) {
 }
 
 function todayString() {
-  const today = new Date();
-  return today.toISOString().slice(0, 10);
+  return new Date().toISOString().slice(0, 10);
 }
 
 function calculateRank(level) {
-  if (level >= 20) return "Financial Boss";
-  if (level >= 15) return "Elite Gold Farmer";
+  if (level >= 20) return "Savings Dominator";
+  if (level >= 15) return "Wealth Champion";
   if (level >= 10) return "Money Knight";
-  if (level >= 5) return "Disciplined Saver";
-  return "Novice Saver";
+  if (level >= 5) return "Gold Farmer";
+  if (level >= 3) return "Disciplined Saver";
+  return "Rookie Saver";
 }
 
 function saveGame() {
@@ -54,26 +60,95 @@ function saveGame() {
 }
 
 function updateCharacterLevel() {
-  const excessLevelBonus = game.storedExcessXp / 100;
-
-  game.level = 1 + excessLevelBonus;
+  game.level = 1 + game.storedExcessXp / 100;
   game.level = Math.round(game.level * 100) / 100;
+}
+
+function updateProfileBadge() {
+  const profileFrame = document.getElementById("profileFrame");
+  const profileTitle = document.getElementById("profileTitle");
+  const profileLevel = document.getElementById("profileLevel");
+  const profileStars = document.getElementById("profileStars");
+
+  profileLevel.textContent = "Level " + game.level.toFixed(2);
+
+  if (game.level >= 20) {
+    profileTitle.textContent = "Savings Dominator";
+    profileFrame.style.borderColor = "#facc15";
+    profileFrame.style.boxShadow = "0 0 35px #facc15";
+    profileStars.textContent = "⭐⭐⭐⭐⭐⭐";
+  } else if (game.level >= 15) {
+    profileTitle.textContent = "Wealth Champion";
+    profileFrame.style.borderColor = "#a855f7";
+    profileFrame.style.boxShadow = "0 0 30px #a855f7";
+    profileStars.textContent = "⭐⭐⭐⭐⭐";
+  } else if (game.level >= 10) {
+    profileTitle.textContent = "Money Knight";
+    profileFrame.style.borderColor = "#3b82f6";
+    profileFrame.style.boxShadow = "0 0 25px #3b82f6";
+    profileStars.textContent = "⭐⭐⭐⭐";
+  } else if (game.level >= 5) {
+    profileTitle.textContent = "Gold Farmer";
+    profileFrame.style.borderColor = "#22c55e";
+    profileFrame.style.boxShadow = "0 0 22px #22c55e";
+    profileStars.textContent = "⭐⭐⭐";
+  } else if (game.level >= 3) {
+    profileTitle.textContent = "Disciplined Saver";
+    profileFrame.style.borderColor = "#06b6d4";
+    profileFrame.style.boxShadow = "0 0 18px #06b6d4";
+    profileStars.textContent = "⭐⭐";
+  } else {
+    profileTitle.textContent = "Rookie Saver";
+    profileFrame.style.borderColor = "#9ca3af";
+    profileFrame.style.boxShadow = "0 0 15px rgba(255,255,255,0.3)";
+    profileStars.textContent = "⭐";
+  }
+}
+
+function updatePhotoControls() {
+  const savedPhoto = localStorage.getItem("profileImage");
+
+  if (savedPhoto) {
+    removePhotoBtn.style.display = "block";
+  } else {
+    removePhotoBtn.style.display = "none";
+  }
+}
+
+function loadSavedProfileImage() {
+  const savedProfileImage = localStorage.getItem("profileImage");
+
+  if (savedProfileImage) {
+    profileImg.src = savedProfileImage;
+    profileImg.style.display = "block";
+    profilePlaceholder.style.display = "none";
+  } else {
+    profileImg.removeAttribute("src");
+    profileImg.style.display = "none";
+    profilePlaceholder.style.display = "block";
+    profileUpload.value = "";
+  }
+
+  updatePhotoControls();
 }
 
 function updateDashboard() {
   salaryInput.value = game.salary || "";
   startingBalanceInput.value = game.startingBalance || "";
-    if (game.hasSetup) {
-  startingBalanceInput.disabled = true;
-  startingBalanceInput.placeholder = "Locked after setup";
-} else {
-  startingBalanceInput.disabled = false;
-}
+
+  if (game.hasSetup) {
+    startingBalanceInput.disabled = true;
+    startingBalanceInput.placeholder = "Locked after setup";
+  } else {
+    startingBalanceInput.disabled = false;
+    startingBalanceInput.placeholder = "Example: 1000";
+  }
+
+  updateCharacterLevel();
 
   currentBalanceEl.textContent = formatMoney(game.currentBalance || 0);
-  updateCharacterLevel();
-rankNameEl.textContent = calculateRank(game.level);
-levelEl.textContent = "Level " + game.level.toFixed(2);
+  rankNameEl.textContent = calculateRank(game.level);
+  levelEl.textContent = "Level " + game.level.toFixed(2);
 
   const safeLifeXp = Math.max(game.lifeXp, 0);
   const lifeBarWidth = Math.min(safeLifeXp, 100);
@@ -90,13 +165,15 @@ levelEl.textContent = "Level " + game.level.toFixed(2);
   lifeTextEl.textContent = "Your monthly salary equals 100% XP: " + formatMoney(game.salary || 0);
 
   excessXpEl.textContent = Math.round(game.storedExcessXp) + "%";
-  levelBarEl.style.width = Math.min(game.storedExcessXp, 100) + "%";
-  levelTextEl.textContent = Math.round(game.storedExcessXp) + "% / 100% excess XP needed for next level";
-  levelMessageEl.textContent = "Excess XP is created only when your balance gain pushes XP above 100%.";
+  levelBarEl.style.width = Math.max(0, Math.min(game.storedExcessXp, 100)) + "%";
+  levelTextEl.textContent =
+    Math.round(game.storedExcessXp) + "% excess XP = +" + (game.storedExcessXp / 100).toFixed(2) + " levels";
+  levelMessageEl.textContent =
+    "Every 10% excess XP increases level by 0.10. If you overspend, excess XP decreases.";
 
   renderLog();
+  updateProfileBadge();
   saveGame();
-    updateCharacterDesign();
 }
 
 function renderLog() {
@@ -130,6 +207,42 @@ function renderLog() {
     logListEl.appendChild(li);
   });
 }
+
+profileUpload.addEventListener("change", function() {
+  const file = profileUpload.files[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(event) {
+    localStorage.setItem("profileImage", event.target.result);
+    loadSavedProfileImage();
+  };
+
+  reader.readAsDataURL(file);
+});
+
+removePhotoBtn.addEventListener("click", function() {
+  const confirmDelete = confirm(
+    "Remove your profile picture?\n\nThis cannot be undone."
+  );
+
+  if (!confirmDelete) return;
+
+  localStorage.removeItem("profileImage");
+
+  profileImg.removeAttribute("src");
+  profileImg.style.display = "none";
+  profilePlaceholder.style.display = "block";
+  profileUpload.value = "";
+
+  updatePhotoControls();
+});
+
+menuBtn.addEventListener("click", function() {
+  setupMenu.classList.toggle("hidden");
+});
 
 setupForm.addEventListener("submit", function(event) {
   event.preventDefault();
@@ -177,35 +290,33 @@ balanceForm.addEventListener("submit", function(event) {
   const moneyChange = newBalance - oldBalance;
   const xpChange = (moneyChange / game.salary) * 100;
 
-game.currentBalance = newBalance;
+  game.currentBalance = newBalance;
 
-let excessGained = 0;
+  let excessGained = 0;
 
-if (xpChange > 0) {
-  game.lifeXp += xpChange;
+  if (xpChange > 0) {
+    game.lifeXp += xpChange;
 
-  if (game.lifeXp > 100) {
-    excessGained = game.lifeXp - 100;
-    game.storedExcessXp += excessGained;
-    game.lifeXp = 100;
-  }
-}
-
-if (xpChange < 0) {
-  let damage = Math.abs(xpChange);
-
-  if (game.lifeXp > 0) {
-    const damageToLife = Math.min(game.lifeXp, damage);
-    game.lifeXp -= damageToLife;
-    damage -= damageToLife;
+    if (game.lifeXp > 100) {
+      excessGained = game.lifeXp - 100;
+      game.storedExcessXp += excessGained;
+      game.lifeXp = 100;
+    }
   }
 
-  if (damage > 0) {
-    game.storedExcessXp -= damage;
-  }
-}
+  if (xpChange < 0) {
+    let damage = Math.abs(xpChange);
 
-updateCharacterLevel();
+    if (game.lifeXp > 0) {
+      const damageToLife = Math.min(game.lifeXp, damage);
+      game.lifeXp -= damageToLife;
+      damage -= damageToLife;
+    }
+
+    if (damage > 0) {
+      game.storedExcessXp -= damage;
+    }
+  }
 
   game.log.push({
     date: date,
@@ -217,13 +328,14 @@ updateCharacterLevel();
   });
 
   if (moneyChange > 0) {
-    gameMessageEl.textContent = "You gained " + xpChange.toFixed(1) + "% XP. Excess XP earned: " + excessGained.toFixed(1) + "%.";
+    gameMessageEl.textContent =
+      "You gained " + xpChange.toFixed(1) + "% XP. Excess XP earned: " + excessGained.toFixed(1) + "%.";
   } else if (moneyChange < 0) {
-    gameMessageEl.textContent = "You lost " + Math.abs(xpChange).toFixed(1) + "% XP. Your life bar took damage.";
+    gameMessageEl.textContent =
+      "You lost " + Math.abs(xpChange).toFixed(1) + "% XP. Your life bar took damage.";
   } else {
     gameMessageEl.textContent = "No balance change. XP stayed the same.";
   }
-
 
   balanceInput.value = "";
   updateDashboard();
@@ -231,50 +343,28 @@ updateCharacterLevel();
 
 resetBtn.addEventListener("click", function() {
   const confirmReset = confirm(
-    "Are you sure you want to reset the game?\n" +
+    "Are you sure you want to reset the game?\n\n" +
     "This cannot be undone.\n" +
     "All previous stats, XP, levels, logs, and achievements will be permanently lost."
   );
 
+  if (!confirmReset) return;
 
-  if (confirmReset) {
-    game = {
-  salary: 0,
-  startingBalance: 0,
-  currentBalance: 0,
-  lifeXp: 100,
-  storedExcessXp: 0,
-  level: 1,
-  log: [],
-  hasSetup: false
-};
+  game = {
+    salary: 0,
+    startingBalance: 0,
+    currentBalance: 0,
+    lifeXp: 100,
+    storedExcessXp: 0,
+    level: 1,
+    log: [],
+    hasSetup: false
+  };
 
-    localStorage.removeItem("savingsXpGame");
-    gameMessageEl.textContent = "Game reset.";
-    updateDashboard();
-  }
+  localStorage.removeItem("savingsXpGame");
+  gameMessageEl.textContent = "Game reset.";
+  updateDashboard();
 });
 
+loadSavedProfileImage();
 updateDashboard();
-
-function updateCharacterDesign() {
-  const characterImg = document.getElementById("characterImg");
-
-  if (game.level >= 20) {
-    characterImg.src = "assets/pic6.svg";
-  } else if (game.level >= 15) {
-    characterImg.src = "assets/pic5.svg";
-  } else if (game.level >= 10) {
-    characterImg.src = "assets/pic4.svg";
-  } else if (game.level >= 5) {
-    characterImg.src = "assets/pic3.svg";
-  } else if (game.level >= 3) {
-    characterImg.src = "assets/pic2.svg";
-  } else {
-    characterImg.src = "assets/pic1.svg";
-  }
-}
-
-menuBtn.addEventListener("click", function() {
-  setupMenu.classList.toggle("hidden");
-});
