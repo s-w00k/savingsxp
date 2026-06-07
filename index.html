@@ -12,14 +12,18 @@
       <h1>Savings XP RPG</h1>
       <p>Your salary is your monthly 100% life bar. Spending damages XP. Extra money becomes level-up power.</p>
     </header>
-      
-<div class="card character-card">
+
+<div class="profile-section">
   <button id="menuBtn" class="menu-btn">⋮</button>
 
-  <h2>Character</h2>
-  <img id="characterImg" src="assets/pic1.svg" alt="Savings character">
+  <label class="profile-frame" id="profileFrame">
+    <img id="profileImg" src="" alt="Profile picture">
+    <span id="profilePlaceholder">Upload Photo</span>
+    <input type="file" id="profileUpload" accept="image/*">
+  </label>
+</div>
 
- <div id="setupMenu" class="setup-menu">
+<div id="setupMenu" class="setup-menu">
   <h2>Game Setup</h2>
 
   <form id="setupForm">
@@ -36,10 +40,19 @@
     <button type="submit" class="secondary-btn">Start / Update Game Setup</button>
   </form>
 
+  <button type="button" id="removePhotoBtn" class="danger-btn">
+  Remove Profile Photo
+</button>
+
   <p class="subtext">
     Example: If salary is $2,000, then $2,000 = 100% XP. A $500 drop costs 25% XP. A $1,000 increase gives 50% XP.
   </p>
 </div>
+
+<div class="profile-info">
+  <h2 id="profileTitle">Rookie Saver</h2>
+  <p id="profileLevel">Level 1.00</p>
+  <div id="profileStars">⭐</div>
 </div>
 
     <section class="dashboard">
